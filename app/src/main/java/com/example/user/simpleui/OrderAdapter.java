@@ -7,6 +7,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 
 /**
@@ -41,19 +43,31 @@ public class OrderAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-       if(convertView == null)
+        Holder holder;
+        if(convertView == null)
        {
-           convertView = inflater.inflate(R.layout.listview_oder_item, null);
+               convertView = inflater.inflate(R.layout.listview_oder_item, null);
+           TextView drinkNameTextView = (TextView)convertView.findViewById(R.id.drinkNameTextView);
+           TextView noteTextView = (TextView)convertView.findViewById(R.id.noteTextView);
+           holder = new Holder();
+           holder.drinkName = drinkNameTextView;
+           holder.note = noteTextView;
 
+           convertView.setTag(holder);
        }
-
-        TextView drinkNameTextView = (TextView)convertView.findViewById(R.id.drinkNameTextView);
-        TextView noteTextView = (TextView)convertView.findViewById(R.id.noteTextView);
-
+        else
+       {
+         holder =(Holder)convertView.getTag();
+       }
         Order order = orders.get(position);
 
-        drinkNameTextView.setText(order.drinkName);
-        noteTextView.setText(order.note);
+        holder.drinkName.setText(order.drinkName);
+        holder.note.setText(order.note);
         return convertView;
+    }
+
+    class Holder{
+        TextView drinkName;
+        TextView note;
     }
 }
