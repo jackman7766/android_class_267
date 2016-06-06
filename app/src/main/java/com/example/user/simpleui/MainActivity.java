@@ -91,10 +91,11 @@ String drinkName = "black tea";
 
             data.add(item);
         }
-        String[] from = {"note", "drinkName"};
-        int[] to = {R.id.noteTextView, R.id.drinkNameTextView};
-
-        SimpleAdapter adapter = new SimpleAdapter(this, data, R.layout.listview_oder_item, from, to);
+//        String[] from = {"note", "drinkName"};
+//        int[] to = {R.id.noteTextView, R.id.drinkNameTextView};
+//
+//        SimpleAdapter adapter = new SimpleAdapter(this, data, R.layout.listview_oder_item, from, to);
+        OrderAdapter adapter = new OrderAdapter(this, orders);
         listView.setAdapter(adapter);
     }
 
