@@ -13,6 +13,7 @@ import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.SimpleAdapter;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -26,6 +27,8 @@ public class MainActivity extends AppCompatActivity {
     RadioGroup radioGroup;
     CheckBox checkBox;
     ListView listView;
+    Spinner storeSpinner;
+
     ArrayList<Order> orders = new ArrayList<>();
 //    String selectedSex = "Male";
 //    String name = "";
@@ -40,6 +43,7 @@ String drinkName = "black tea";
         radioGroup = (RadioGroup) findViewById(R.id.radioGroup);
         checkBox = (CheckBox) findViewById(R.id.checkBox);
         listView = (ListView)findViewById(R.id.listView);
+        storeSpinner = (Spinner)findViewById(R.id.storeSpinner);
 
         setupListView();
 
@@ -74,7 +78,12 @@ String drinkName = "black tea";
 //        });
 
     }
-
+    void setupSpinner()
+    {
+        String[] data = getResources().getStringArray(R.array.storeInfo);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, data);
+        storeSpinner.setAdapter(adapter);
+    }
     void setupListView()
     {
 //        String[] data = new String[]{"123", "456","789","Hello","ListView","Hi"};
@@ -107,6 +116,7 @@ String drinkName = "black tea";
             Order order = new Order();
             order.note = note;
             order.drinkName = drinkName;
+            order.storeInfo = (String)storeSpinner.getSelectedItem();
             orders.add(order);
                 textView.setText(drinkName);
                 editText.setText("");

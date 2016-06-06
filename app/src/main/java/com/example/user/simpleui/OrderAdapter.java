@@ -46,12 +46,13 @@ public class OrderAdapter extends BaseAdapter {
         Holder holder;
         if(convertView == null)
        {
-               convertView = inflater.inflate(R.layout.listview_oder_item, null);
+           convertView = inflater.inflate(R.layout.listview_oder_item, null);
            TextView drinkNameTextView = (TextView)convertView.findViewById(R.id.drinkNameTextView);
            TextView noteTextView = (TextView)convertView.findViewById(R.id.noteTextView);
            holder = new Holder();
            holder.drinkName = drinkNameTextView;
            holder.note = noteTextView;
+           holder.store = (TextView)convertView.findViewById(R.id.storeTextView);
 
            convertView.setTag(holder);
        }
@@ -63,11 +64,13 @@ public class OrderAdapter extends BaseAdapter {
 
         holder.drinkName.setText(order.drinkName);
         holder.note.setText(order.note);
+        holder.store.setText(order.storeInfo);
         return convertView;
     }
 
     class Holder{
         TextView drinkName;
         TextView note;
+        TextView store;
     }
 }
