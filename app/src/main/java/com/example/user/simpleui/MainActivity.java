@@ -1,5 +1,6 @@
 package com.example.user.simpleui;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -58,6 +59,8 @@ String drinkName = "black tea";
                 return false;
             }
         });
+
+        Log.d("Debug", "Main Acti OnCreate");
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedID) {
@@ -122,21 +125,43 @@ String drinkName = "black tea";
                 editText.setText("");
                 setupListView();
             }
-//            public void changeTextView()
-//            {
-//               if(name.equals(""))
-//                   return;
-//                if (checkBox.isChecked())
-//               {
-//                  textview.setText(name);
-//               }
-//                else
-//               {
-//                   String content = name + "sex: " + selectedSex;
-//
-//                   textview.setText(content);
-//               }
-//
-//            }
+
+    public void goToMenu(View view)
+    {
+        Intent intent = new Intent();
+        intent.setClass(this, DrinkMenuActivity.class);
+        startActivity(intent);
+    }
+    @Override
+    protected void onStart() {
+               super.onStart();
+               Log.d("Debug", "Main Activity onStart");
+           }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d("Debug", "Main Activity onResume");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d("Debug", "Main Activity onPause");
+    }
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.d("Debug", "Main Activity onStop");
+    }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d("Debug", "Main Activity onDestroy");
+    }
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Log.d("Debug", "Main Activity onRestart");
+    }
         }
 
