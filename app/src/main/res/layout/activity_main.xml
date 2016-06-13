@@ -23,8 +23,8 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="false"
         android:onClick="click"
-        android:drawableRight="@drawable/image"
-        android:layout_below="@+id/checkBox" />
+        android:layout_below="@+id/checkBox"
+        android:elegantTextHeight="true" />
 
     <EditText
         android:layout_width="match_parent"
@@ -91,8 +91,8 @@
         android:layout_height="wrap_content"
         android:text="Menu"
         android:id="@+id/button2"
-        android:layout_centerVertical="true"
+        android:onClick="goToMenu"
+        android:layout_above="@+id/listView"
         android:layout_toRightOf="@+id/button"
-        android:layout_toEndOf="@+id/button"
-        android:onClick="goToMenu" />
+        android:layout_toEndOf="@+id/button" />
 </RelativeLayout>
