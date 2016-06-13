@@ -97,6 +97,21 @@ public class DrinkMenuActivity extends AppCompatActivity {
         setResult(RESULT_OK, intent);
         finish();
     }
+
+    public void cancel(View view)
+    {
+        Intent intent = new Intent();
+        JSONArray array = new JSONArray();
+        for (Drink drink : drinkOrders)
+        {
+            JSONObject object = drink.getData();
+            array.put(object);
+        }
+        intent.putExtra("results", array.toString());
+
+        setResult(RESULT_CANCELED, intent);
+        finish();
+    }
     @Override
     protected void onStart() {
         super.onStart();

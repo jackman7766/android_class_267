@@ -149,6 +149,11 @@ String drinkName = "black tea";
                textView.setText(data.getStringExtra("results"));
                 Toast.makeText(this, "完成菜單", Toast.LENGTH_LONG).show();
             }
+            if(resultCode == RESULT_CANCELED)
+            {
+                textView.setText("");
+                Toast.makeText(this, "取消菜單", Toast.LENGTH_LONG).show();
+            }
         }
     }
 
