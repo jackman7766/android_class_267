@@ -16,6 +16,7 @@ import android.widget.RadioGroup;
 import android.widget.SimpleAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
     Spinner storeSpinner;
 
     ArrayList<Order> orders = new ArrayList<>();
+    final int REQUEST_CODE_DRINK_MENU_ACTIVITY = 0;
 //    String selectedSex = "Male";
 //    String name = "";
 //    String sex = "";
@@ -38,6 +40,9 @@ String drinkName = "black tea";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
+
         setContentView(R.layout.activity_main);
         textView = (TextView) findViewById(R.id.TextView);
         editText = (EditText) findViewById(R.id.editText);
@@ -130,8 +135,23 @@ String drinkName = "black tea";
     {
         Intent intent = new Intent();
         intent.setClass(this, DrinkMenuActivity.class);
-        startActivity(intent);
+        startActivityForResult(intent, REQUEST_CODE_DRINK_MENU_ACTIVITY );
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode ==  REQUEST_CODE_DRINK_MENU_ACTIVITY)
+        {
+            if(resultCode == RESULT_OK)
+            {
+               textView.setText(data.getStringExtra("results"));
+                Toast.makeText(this, "完成菜單", Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
     @Override
     protected void onStart() {
                super.onStart();

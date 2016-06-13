@@ -1,19 +1,26 @@
 package com.example.user.simpleui;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
 public class DrinkMenuActivity extends AppCompatActivity {
 
     ListView drinkListView;
-    TextView priceTxtView;
+    TextView priceTextView;
 
     ArrayList<Drink> drinks = new ArrayList<>();
+    ArrayList<Drink> drinkOrders = new ArrayList<>(); //紀錄案下去的次數
     //SET DATA
     String[] names = {"冬瓜紅茶", "玫瑰鹽奶蓋紅茶", "珍珠紅茶拿鐵", "紅茶拿鐵"};
     int[] mPrices = {25,35,45,35};
@@ -29,9 +36,31 @@ public class DrinkMenuActivity extends AppCompatActivity {
 
         //get UI component
         drinkListView = (ListView)findViewById(R.id.drinkListView);
-        priceTxtView =  (TextView)findViewById(R.id.priceTextView);
+        priceTextView =  (TextView)findViewById(R.id.priceTextView);
         setupListView();
-        Log.d("Debug","Drink Menu Activity OnCreate");
+        drinkListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
+                                             {
+                                                 @Override
+                                            public void onItemClick(AdapterView<?>parent, View view, int position, long Id)
+                                                 {
+                                                     DrinkAdapter drinkAdapter = (DrinkAdapter)parent.getAdapter();
+                                                     Drink drink = (Drink)drinkAdapter.getItem(position);
+                                                     drinkOrders.add(drink);
+                                                     updateTotalPrice();
+                                                 }
+                                             }
+        );
+
+                Log.d("Debug", "Drink Menu Activity OnCreate");
+    }
+    private void updateTotalPrice()
+    {
+        int total = 0;
+        for(Drink drink: drinkOrders)
+        {
+            total +=drink.mPrice;
+        }
+        priceTextView.setText(String.valueOf(total));
     }
 
 
@@ -48,10 +77,26 @@ public class DrinkMenuActivity extends AppCompatActivity {
         }
      }
 
-    private void setupListView(){
-
+    private void setupListView()
+    {
+        DrinkAdapter adapter = new DrinkAdapter(this, drinks);
+        drinkListView.setAdapter(adapter);
     }
 
+    public void done(View view)
+    {
+       Intent intent = new Intent();
+       JSONArray array = new JSONArray();
+        for (Drink drink : drinkOrders)
+        {
+            JSONObject object = drink.getData();
+            array.put(object);
+        }
+        intent.putExtra("results", array.toString());
+
+        setResult(RESULT_OK, intent);
+        finish();
+    }
     @Override
     protected void onStart() {
         super.onStart();

@@ -25,7 +25,7 @@ public class DrinkAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return 0;
+        return drinks.size();
     }
 
     @Override
@@ -54,7 +54,12 @@ public class DrinkAdapter extends BaseAdapter {
         }
 
         Drink drink = drinks.get(position);
-        return null;
+
+        holder.drinkNameTextView.setText(drink.name);
+        holder.mPriceTextView.setText(String.valueOf(drink.mPrice));
+        holder.lPriceTextView.setText(String.valueOf(drink.lPrice));
+        holder.drinkImageView.setImageResource(drink.imageId);
+        return convertView;
     }
 
     class Holder{
