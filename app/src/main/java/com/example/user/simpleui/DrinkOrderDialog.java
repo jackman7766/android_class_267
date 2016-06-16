@@ -11,6 +11,7 @@ import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.NumberPicker;
 
 
 /**
@@ -72,7 +73,7 @@ public class DrinkOrderDialog extends DialogFragment {
            drinkOrder = DrinkOrder.newInstanceJsonObject(data);
         }
         LayoutInflater layoutInflater = LayoutInflater.from(getActivity());
-        View root = layoutInflater.inflate(R.layout.fragment_drink_order_dialog,null);
+        View root = layoutInflater.inflate(R.layout.fragment_drink_order_dialog, null);
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
         builder.setView(root)
@@ -89,8 +90,15 @@ public class DrinkOrderDialog extends DialogFragment {
 
                     }
                 });
-
-        return builder.create();
+              NumberPicker numberPicker1 = (NumberPicker)root.findViewById(R.id.numberPicker);
+              numberPicker1.setMaxValue(100);
+              numberPicker1.setMinValue(0);
+              numberPicker1.setValue(drinkOrder.mNumber);
+              NumberPicker numberPicker2 = (NumberPicker)root.findViewById(R.id.numberPicker2);
+              numberPicker2.setMaxValue(100);
+              numberPicker2.setMinValue(0);
+              numberPicker1.setValue(drinkOrder.lNumber);
+             return builder.create();
     }
 
     @Override
