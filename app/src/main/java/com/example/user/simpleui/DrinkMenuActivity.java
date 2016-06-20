@@ -89,8 +89,6 @@ public class DrinkMenuActivity extends AppCompatActivity implements DrinkOrderDi
         priceTextView.setText(String.valueOf(total));
     }
 
-
-
     private void setData()
      {
         for(int i =0; i<4; i++) {
