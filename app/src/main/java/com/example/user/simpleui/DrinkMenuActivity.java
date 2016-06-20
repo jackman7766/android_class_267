@@ -10,19 +10,18 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class DrinkMenuActivity extends AppCompatActivity implements  DrinkOrderDialog.OnFragmentInteractionListener{
+public class DrinkMenuActivity extends AppCompatActivity implements DrinkOrderDialog.OnDrinkOrderListener {
 
     ListView drinkListView;
     TextView priceTextView;
 
     ArrayList<Drink> drinks = new ArrayList<>();
-    ArrayList<Drink> drinkOrders = new ArrayList<>(); //紀錄案下去的次數
+    ArrayList<DrinkOrder> drinkOrders = new ArrayList<>(); //紀錄按下去的次數
     //SET DATA
     String[] names = {"冬瓜紅茶", "玫瑰鹽奶蓋紅茶", "珍珠紅茶拿鐵", "紅茶拿鐵"};
     int[] mPrices = {25,35,45,35};
@@ -49,7 +48,6 @@ public class DrinkMenuActivity extends AppCompatActivity implements  DrinkOrderD
                 ShowDetailDrinkMenu(drink);
             }
         });
-
         Log.d("Debug", "Drink Menu Activity OnCreate");
     }
 
@@ -57,11 +55,24 @@ public class DrinkMenuActivity extends AppCompatActivity implements  DrinkOrderD
     {
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction ft = fragmentManager.beginTransaction();
-        
         DrinkOrder drinkOrder = new DrinkOrder();
-        drinkOrder.mPrice = drink.mPrice;
-        drinkOrder.lPrice = drink.lPrice;
-        drinkOrder.drinkName = drink.name;
+        Boolean flag =false;//先前是否已有訂單資料
+        for(DrinkOrder order : drinkOrders)
+        {
+            if(order.drinkName.equals(drink.name))
+            {
+                drinkOrder = order;
+                flag = true;
+                break;
+            }
+        }
+        if(!flag)
+        {
+            drinkOrder.mPrice = drink.mPrice;
+            drinkOrder.lPrice = drink.lPrice;
+            drinkOrder.drinkName = drink.name;
+        }
+
         DrinkOrderDialog orderDialog = DrinkOrderDialog.newInstance(drinkOrder);
         orderDialog.show(ft,"DrinkOrderDialog");  //show的方法有實做commit
 //        ft.replace(R.id.root, orderDialog);
@@ -71,9 +82,9 @@ public class DrinkMenuActivity extends AppCompatActivity implements  DrinkOrderD
     private void updateTotalPrice()
     {
         int total = 0;
-        for(Drink drink: drinkOrders)
+        for(DrinkOrder order: drinkOrders)
         {
-            total +=drink.mPrice;
+            total += order.mPrice * order.mNumber + order.lPrice * order.lNumber;
         }
         priceTextView.setText(String.valueOf(total));
     }
@@ -102,9 +113,9 @@ public class DrinkMenuActivity extends AppCompatActivity implements  DrinkOrderD
     {
        Intent intent = new Intent();
        JSONArray array = new JSONArray();
-        for (Drink drink : drinkOrders)
+        for (DrinkOrder order : drinkOrders)
         {
-            JSONObject object = drink.getData();
+            JSONObject object = order.getJsonObeject();
             array.put(object);
         }
         intent.putExtra("results", array.toString());
@@ -116,15 +127,7 @@ public class DrinkMenuActivity extends AppCompatActivity implements  DrinkOrderD
     public void cancel(View view)
     {
         Intent intent = new Intent();
-        JSONArray array = new JSONArray();
-        for (Drink drink : drinkOrders)
-        {
-            JSONObject object = drink.getData();
-            array.put(object);
-        }
-        intent.putExtra("results", array.toString());
-
-        setResult(RESULT_CANCELED, intent);
+        setResult(RESULT_CANCELED, null);
         finish();
     }
     @Override
@@ -157,5 +160,22 @@ public class DrinkMenuActivity extends AppCompatActivity implements  DrinkOrderD
     protected void onRestart() {
         super.onRestart();
         Log.d("Debug", "Drink Menu Activity onRestart");
+    }
+
+    @Override
+    public void OnDrinkOrderFinished(DrinkOrder drinkOrder) {
+        for(int i =0; i< drinkOrders.size(); i++)
+        {
+            //判斷是否之前有資料，如果有的話
+            if(drinkOrders.get(i).drinkName.equals(drinkOrder.drinkName))
+            {
+                drinkOrders.set(i, drinkOrder);
+                updateTotalPrice();
+                return;
+            }
+        }
+        //判斷是否之前有資料，如果沒有的話
+        drinkOrders.add(drinkOrder);
+        updateTotalPrice();
     }
 }
