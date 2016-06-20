@@ -1,8 +1,12 @@
 package com.example.user.simpleui;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -38,11 +42,13 @@ public class MainActivity extends AppCompatActivity {
 //    String sex = "";
 String drinkName = "black tea";
     String menuResults ="";
+
+    SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
 
         setContentView(R.layout.activity_main);
         textView = (TextView) findViewById(R.id.TextView);
@@ -51,18 +57,46 @@ String drinkName = "black tea";
         checkBox = (CheckBox) findViewById(R.id.checkBox);
         listView = (ListView)findViewById(R.id.listView);
         storeSpinner = (Spinner)findViewById(R.id.storeSpinner);
-
+        sharedPreferences = getSharedPreferences("setting", Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        setupOrdersData();
         setupListView();
+        setupSpinner();
 
-        setupListView();
+
+        editText.setText(sharedPreferences.getString("editText", ""));
         editText.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
+                String text = editText.getText().toString();
+                editor.putString("editText", text);
+                editor.apply();
+
+
                 if (keyCode == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN) {
                     click(v);
                     return true;
                 }
                 return false;
+            }
+        });
+
+        textView.setText(sharedPreferences.getString("textView",""));
+        textView.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                editor.putString("textView", s.toString());
+                editor.apply();
             }
         });
 
@@ -95,6 +129,8 @@ String drinkName = "black tea";
     }
     void setupListView()
     {
+
+
 //        String[] data = new String[]{"123", "456","789","Hello","ListView","Hi"};
 //        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, drinks);
 //        List<Map<String,String>> data = new ArrayList<>();
@@ -116,6 +152,19 @@ String drinkName = "black tea";
         OrderAdapter adapter = new OrderAdapter(this, orders);
         listView.setAdapter(adapter);
     }
+    public void setupOrdersData()
+    {
+        String content = Utils.readFile(this, "history");
+        String[] datas = content.split("\n");
+        for(int i =0; i<datas.length; i++)
+        {
+            Order order = Order.newInstanceWithData(datas[i]);
+            if(order !=null)
+            {
+                orders.add(order);
+            }
+        }
+    }
 
         public void click(View view) {
                String note = editText.getText().toString();
@@ -127,7 +176,7 @@ String drinkName = "black tea";
             order.menuResults = menuResults;
             order.storeInfo = (String)storeSpinner.getSelectedItem();
             orders.add(order);
-
+            Utils.writeFile(this, "history", order.getJsonObject().toString());
             textView.setText(note);
             menuResults = "";
             editText.setText("");
