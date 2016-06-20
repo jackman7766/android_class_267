@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
 //    String name = "";
 //    String sex = "";
 String drinkName = "black tea";
+    String menuResults ="";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,18 +97,18 @@ String drinkName = "black tea";
     {
 //        String[] data = new String[]{"123", "456","789","Hello","ListView","Hi"};
 //        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, drinks);
-        List<Map<String,String>> data = new ArrayList<>();
-
-        for(int i = 0; i < orders.size(); i++)
-        {
-            Order order = orders.get(i);
-            Map<String,String> item = new HashMap<>();
-
-            item.put("note", order.note); //(key , value)
-            item.put("drinkName", order.drinkName);
-
-            data.add(item);
-        }
+//        List<Map<String,String>> data = new ArrayList<>();
+//
+//        for(int i = 0; i < orders.size(); i++)
+//        {
+//            Order order = orders.get(i);
+//            Map<String,String> item = new HashMap<>();
+//
+//            item.put("note", order.note); //(key , value)
+//            item.put("drinkName", order.drinkName);
+//
+//            data.add(item);
+//        }
 //        String[] from = {"note", "drinkName"};
 //        int[] to = {R.id.noteTextView, R.id.drinkNameTextView};
 //
@@ -123,12 +124,15 @@ String drinkName = "black tea";
 
             Order order = new Order();
             order.note = note;
-            order.drinkName = drinkName;
+            order.menuResults = menuResults;
             order.storeInfo = (String)storeSpinner.getSelectedItem();
             orders.add(order);
-                textView.setText(drinkName);
-                editText.setText("");
-                setupListView();
+
+            textView.setText(note);
+            menuResults = "";
+            editText.setText("");
+
+            setupListView();
             }
 
     public void goToMenu(View view)
@@ -146,7 +150,7 @@ String drinkName = "black tea";
         {
             if(resultCode == RESULT_OK)
             {
-               textView.setText(data.getStringExtra("results"));
+                menuResults = data.getStringExtra("results");
                 Toast.makeText(this, "完成菜單", Toast.LENGTH_LONG).show();
             }
             if(resultCode == RESULT_CANCELED)

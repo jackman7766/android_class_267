@@ -43,7 +43,7 @@ public class DrinkAdapter extends BaseAdapter {
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.listview_drink_item, null);
             holder = new Holder();
-            holder.drinkNameTextView = (TextView) convertView.findViewById(R.id.drinkNameTextView);
+            holder.drinkNameTextView = (TextView) convertView.findViewById(R.id.noteTextView);
             holder.mPriceTextView = (TextView) convertView.findViewById(R.id.mPriceTextView);
             holder.lPriceTextView = (TextView) convertView.findViewById(R.id.lPriceTextView);
             holder.drinkImageView = (ImageView) convertView.findViewById(R.id.drinkImageView);
