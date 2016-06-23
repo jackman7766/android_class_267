@@ -3,6 +3,8 @@ package com.example.user.simpleui;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -175,8 +177,7 @@ String drinkName = "black tea";
         OrderAdapter adapter = new OrderAdapter(this, orders);
         listView.setAdapter(adapter);
     }
-    public void setupOrdersData()
-    {
+    public void setupOrdersData() {
 //        String content = Utils.readFile(this, "history");
 //        String[] datas = content.split("\n");
 //        for(int i =0; i<datas.length; i++)
@@ -187,13 +188,37 @@ String drinkName = "black tea";
 //                orders.add(order);
 //            }
 //        }
-        Order.getquery().findInBackground(new FindCallback<Order>() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo info = cm.getActiveNetworkInfo();
+
+        final FindCallback<Order> callback = new FindCallback<Order>() {
             @Override
             public void done(List<Order> objects, ParseException e) {
-                orders = objects;
-                setupListView();
+                if(e == null) {
+                    orders = objects;
+                    setupListView();
+                }
             }
-        });
+        };
+
+        if (info != null && info.isConnected()) {
+            Order.getOrderFromRemote(new FindCallback<Order>() {
+                @Override
+                public void done(List<Order> objects, ParseException e) {
+                    if(e!=null)
+                    {
+                        Toast.makeText(MainActivity.this, "Sync Failed", Toast.LENGTH_LONG).show();
+                        Order.getquery().fromLocalDatastore().findInBackground(callback);
+                    }
+                    else
+                    {
+                        callback.done(objects, e);
+                    }
+                }
+            });
+        } else {
+            Order.getquery().fromLocalDatastore().findInBackground(callback);
+        }
     }
 
         public void click(View view) {

@@ -10,17 +10,22 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import com.parse.FindCallback;
+import com.parse.ParseException;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class DrinkMenuActivity extends AppCompatActivity implements DrinkOrderDialog.OnDrinkOrderListener {
 
     ListView drinkListView;
     TextView priceTextView;
 
-    ArrayList<Drink> drinks = new ArrayList<>();
+    List<Drink> drinks = new ArrayList<>();
     ArrayList<DrinkOrder> drinkOrders = new ArrayList<>(); //紀錄按下去的次數
     //SET DATA
     String[] names = {"冬瓜紅茶", "玫瑰鹽奶蓋紅茶", "珍珠紅茶拿鐵", "紅茶拿鐵"};
@@ -68,9 +73,9 @@ public class DrinkMenuActivity extends AppCompatActivity implements DrinkOrderDi
         }
         if(!flag)
         {
-            drinkOrder.mPrice = drink.mPrice;
-            drinkOrder.lPrice = drink.lPrice;
-            drinkOrder.drinkName = drink.name;
+            drinkOrder.mPrice = drink.getmPrice();
+            drinkOrder.lPrice = drink.getlPrice();
+            drinkOrder.drinkName = drink.getName();
         }
 
         DrinkOrderDialog orderDialog = DrinkOrderDialog.newInstance(drinkOrder);
@@ -91,14 +96,25 @@ public class DrinkMenuActivity extends AppCompatActivity implements DrinkOrderDi
 
     private void setData()
      {
-        for(int i =0; i<4; i++) {
-            Drink drink = new Drink();
-            drink.name = names[i];
-            drink.mPrice = mPrices[i];
-            drink.lPrice = lPrices[i];
-            drink.imageId = imageId[i];
-            drinks.add(drink);
-        }
+         Drink.getQuery().findInBackground(new FindCallback<Drink>() {
+             @Override
+             public void done(List<Drink> objects, ParseException e) {
+                 if(e==null)
+                 {
+                     drinks = objects;
+                     setupListView();
+                 }
+             }
+         });
+
+//        for(int i =0; i<4; i++) {
+//            Drink drink = new Drink();
+//            drink.name = names[i];
+//            drink.mPrice = mPrices[i];
+//            drink.lPrice = lPrices[i];
+//            drink.imageId = imageId[i];
+//            drinks.add(drink);
+//        }
      }
 
     private void setupListView()

@@ -39,7 +39,7 @@ public class Order extends ParseObject{
 
     public static ParseQuery<Order> getquery() {return ParseQuery.getQuery(Order.class);}
 
-    public static void getOrderFromRemote(final FindCallback callback)
+    public static void getOrderFromRemote(final FindCallback<Order> callback)
     {
         getquery().findInBackground(new FindCallback<Order>() {
             @Override
