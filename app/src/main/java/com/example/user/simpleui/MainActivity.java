@@ -205,6 +205,7 @@ String drinkName = "black tea";
             order.setNote(note);
             order.setMenuResults(menuResults);
             order.setStoreInfo((String) storeSpinner.getSelectedItem());
+            order.pinInBackground();
             order.saveEventually();
             orders.add(order);
             Utils.writeFile(this, "history", order.getJsonObject().toString());

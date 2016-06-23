@@ -1,12 +1,16 @@
 package com.example.user.simpleui;
 
+import com.parse.FindCallback;
 import com.parse.ParseClassName;
+import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.List;
 
 /**
  * Created by user on 2016/6/6.
@@ -34,6 +38,20 @@ public class Order extends ParseObject{
     public void setStoreInfo(String storeInfo){ put("storeInfo", storeInfo);}
 
     public static ParseQuery<Order> getquery() {return ParseQuery.getQuery(Order.class);}
+
+    public static void getOrderFromRemote(final FindCallback callback)
+    {
+        getquery().findInBackground(new FindCallback<Order>() {
+            @Override
+            public void done(List<Order> objects, ParseException e) {
+
+                if(e == null){
+                    ParseObject.pinAllInBackground(objects);  //全都先存在local
+                }
+                callback.done(objects, e);
+            }
+        });
+    }
 
     public JSONObject getJsonObject()
     {
