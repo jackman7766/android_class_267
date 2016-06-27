@@ -1,6 +1,9 @@
 package com.example.user.simpleui;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.text.StaticLayout;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -65,7 +68,7 @@ public class Utils {
             int len = 0;
             while((len = inputStream.read(buffer))!= -1)
             {
-                byteArrayOutputStream.write(buffer, 0, inputStream.read(buffer));
+                byteArrayOutputStream.write(buffer, 0, len);
             }
             return byteArrayOutputStream.toByteArray();
         } catch (MalformedURLException e) {
@@ -109,6 +112,20 @@ public class Utils {
             }
         } catch (JSONException e) {
             e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static Bitmap getStaticMap(double[] latlng)
+    {
+        String center = String.valueOf(latlng[0]) + "," + String.valueOf(latlng[1]);
+        String staticMapUrl="http://maps.google.com/maps/api/staticmap?center=" + center + "&size=640x400&zoom=17";
+
+        byte[] bytes = Utils.urlToBytes(staticMapUrl);
+        if(bytes != null)
+        {
+            Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+            return bitmap;
         }
         return null;
     }

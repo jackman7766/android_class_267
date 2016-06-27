@@ -6,17 +6,22 @@ import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.ref.WeakReference;
+import java.util.Map;
+
 public class OrderDetailActivity extends AppCompatActivity {
 
     TextView noteTextView;
     TextView menuResultsTextView;
     TextView storeInfoTextView;
+    ImageView staticMap;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,12 +35,13 @@ public class OrderDetailActivity extends AppCompatActivity {
         noteTextView = (TextView)findViewById(R.id.noteTextView);
         menuResultsTextView = (TextView)findViewById(R.id.menuResultsTextView);
         storeInfoTextView = (TextView)findViewById(R.id.storeInfoTextView);
-
+        staticMap = (ImageView)findViewById(R.id.imageView);
         if(note != null)
             noteTextView.setText(note);
 
         if(storeInfo != null)
             storeInfoTextView.setText(storeInfo);
+
          String text ="";
         if(menuResults != null)
         {
@@ -57,7 +63,7 @@ public class OrderDetailActivity extends AppCompatActivity {
         if(storeInfos !=null && storeInfos.length >1)
         {
             String address = storeInfos[1];
-            (new GeoCodingTask()).execute(address);
+            (new GeoCodingTask(staticMap)).execute(address);
         }
 
         Log.d("debug", note);
@@ -66,6 +72,8 @@ public class OrderDetailActivity extends AppCompatActivity {
     }
 
     private static class GeoCodingTask extends AsyncTask<String, Void, Bitmap>{
+
+        WeakReference<ImageView> imageViewWeakReference;
         @Override
         protected Bitmap doInBackground(String... params) {
             String address = params[0];
@@ -74,12 +82,20 @@ public class OrderDetailActivity extends AppCompatActivity {
                 Log.d("Debug",String.valueOf(latlng[0]));
                 Log.d("Debug",String.valueOf(latlng[1]));
             }
-            return null;
+            return Utils.getStaticMap(latlng);
         }
         @Override
         protected  void onPostExecute(Bitmap bitmap){
             super.onPostExecute(bitmap);
+            if(imageViewWeakReference.get() !=null)
+            {
+                ImageView imageView = imageViewWeakReference.get();
+                imageView.setImageBitmap(bitmap);
+            }
+        }
 
+        public GeoCodingTask(ImageView imageView){
+            this.imageViewWeakReference = new WeakReference<ImageView>(imageView);
         }
     }
 }
