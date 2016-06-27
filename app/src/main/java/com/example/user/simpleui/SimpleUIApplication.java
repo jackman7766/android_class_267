@@ -17,9 +17,9 @@ public class SimpleUIApplication extends Application {
         ParseObject.registerSubclass(Order.class);
         ParseObject.registerSubclass(Drink.class);
         Parse.initialize(new Parse.Configuration.Builder(this)
-                        .applicationId("Hw9aA6CM8oj9GhLBVhs0gVu3Ok6QaWMHHy3L5uzE")
-                        .server("https://parseapi.back4app.com/")
-                        .clientKey("IuAnsRIkrNLy0cVRDJ87eEtKpcleTIqpdG2XNVgQ")
+                        .applicationId("76ee57f8e5f8bd628cc9586e93d428d5")
+                        .server("http://parseserver-ps662-env.us-east-1.elasticbeanstalk.com/parse")
+                       // .clientKey("IuAnsRIkrNLy0cVRDJ87eEtKpcleTIqpdG2XNVgQ")
                         .enableLocalDataStore()
                         .build()
         );
